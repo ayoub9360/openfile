@@ -1,0 +1,14 @@
+# Run Caddy on the host. Set OPEN_FILE_DOMAIN to your public DNS name.
+# APP_URL and TRUSTED_ORIGINS must be https://that-name.
+{$OPEN_FILE_DOMAIN} {
+    request_body {
+        max_size 105MB
+    }
+    header Strict-Transport-Security "max-age=31536000"
+    reverse_proxy 127.0.0.1:3000 {
+        # Do not forward client-supplied identity headers.
+        header_up -X-Open-File-Peer
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Real-IP {remote_host}
+    }
+}
