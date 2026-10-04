@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types, security, build and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Only used by the disposable CI instance and browser tests.
+      SIGNUP_TOKEN: open-file-ci-invitation-not-for-deployment
+      MIGRATION_DATABASE_URL: postgres://openfile:ci-only-password@127.0.0.1:55432/openfile
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: openfile
+          POSTGRES_DB: openfile
+          # Disposable database, reachable only on this job's runner.
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U openfile -d openfile"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Prepare disposable test configuration
+        run: node scripts/setup.mjs
+      - run: pnpm lint
+      # Generates Next's declarations before typechecking a fresh checkout.
+      - run: pnpm build
+      - run: pnpm typecheck
+      - run: pnpm test:security
+      - run: pnpm audit --prod --audit-level=low
+      - run: pnpm --filter @open-file/web test
+      - run: pnpm --filter @open-file/server test
+      - name: Migrate and provision the restricted application role
+        run: pnpm --filter @open-file/server provision
+      - run: pnpm --filter @open-file/web exec playwright install --with-deps chromium
+      - name: Start production app and worker
+        env:
+          NODE_ENV: production
+        run: |
+          mkdir -p /tmp/open-file-ci
+          node apps/server/dist/main.js > /tmp/open-file-ci/api.log 2>&1 &
+          for ((attempt = 0; attempt < 60; attempt++)); do
+            if curl --fail --silent http://localhost:3001/api/health > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://localhost:3001/api/health
+          node apps/server/dist/worker.js > /tmp/open-file-ci/worker.log 2>&1 &
+          pnpm --filter @open-file/web start --hostname 127.0.0.1 > /tmp/open-file-ci/web.log 2>&1 &
+          for ((attempt = 0; attempt < 60; attempt++)); do
+            if curl --fail --silent http://localhost:3000 > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://localhost:3000 > /dev/null
+      - run: pnpm --filter @open-file/web test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:3000
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ci-diagnostics
+          path: |
+            /tmp/open-file-ci/*.log
+            apps/web/test-results/
+            apps/web/playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  docker:
+    name: Build Docker targets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - run: docker build --target server --tag open-file-server:ci .
+      - run: docker build --target frontend --tag open-file-web:ci .
