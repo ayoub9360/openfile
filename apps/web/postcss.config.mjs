@@ -1,0 +1,1 @@
+export { default } from "@open-file/ui/postcss.config";

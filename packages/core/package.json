@@ -1,0 +1,17 @@
+{
+  "name": "@open-file/core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./workspace": "./src/workspace.ts",
+    "./assistant": "./src/assistant.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@open-file/typescript-config": "workspace:*",
+    "typescript": "^7.0.2"
+  }
+}

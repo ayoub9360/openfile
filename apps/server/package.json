@@ -1,0 +1,45 @@
+{
+  "name": "@open-file/server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm build && tsx watch src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsup",
+    "migrate": "tsx src/migrate.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "pnpm build && node ../../scripts/test-server.mjs",
+    "worker": "pnpm build && tsx src/worker.ts",
+    "provision": "tsx src/provision.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^4.0.83",
+    "@napi-rs/canvas": "0.1.80",
+    "@open-file/core": "workspace:*",
+    "ai": "^7.0.127",
+    "better-auth": "^1.7.7",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "file-type": "^22.1.1",
+    "helmet": "^8.3.0",
+    "multer": "^2.4.0",
+    "pdf-parse": "^2.4.5",
+    "pg": "^8.23.1",
+    "zod": "^4.6.5",
+    "image-size": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.3.0",
+    "@types/pg": "^8.23.1",
+    "@open-file/eslint-config": "workspace:*",
+    "@open-file/typescript-config": "workspace:*",
+    "eslint": "^10.11.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "@open-file/typescript-config/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@open-file/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,20 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  msw: false
+
+minimumReleaseAgeExclude:
+  # Version fournie par le générateur shadcn et conservée lors de l'initialisation.
+  - lucide-react@1.50.0
+
+patchedDependencies:
+  braces@3.0.3: patches/braces@3.0.3.patch
+
+# tsup 8 pins the vulnerable 0.27 branch; build/tests validate this replacement.
+overrides:
+  esbuild@0.27.7: 0.28.2
