@@ -1,0 +1,143 @@
+[
+  {
+    "file": "2026-07_internet_invoice.pdf",
+    "title": "Internet invoice",
+    "issuer": "Fibre & Fern",
+    "reference": "FF-2026-0701",
+    "date": "2026-07-01",
+    "kind": "Invoice",
+    "folder": "Documents/Finance/Invoices/2026",
+    "tags": [
+      "home",
+      "internet",
+      "invoice"
+    ],
+    "amount": 39,
+    "lines": [
+      "Customer: Camille Martin (fictional)",
+      "Service period: 01 July - 31 July 2026",
+      "Home fibre subscription: EUR 32.50",
+      "VAT (20%): EUR 6.50",
+      "Total including VAT: EUR 39.00",
+      "Payment received on 05 July 2026."
+    ]
+  },
+  {
+    "file": "2026-08_internet_invoice.pdf",
+    "title": "Internet invoice",
+    "issuer": "Fibre & Fern",
+    "reference": "FF-2026-0801",
+    "date": "2026-08-01",
+    "kind": "Invoice",
+    "folder": "Documents/Finance/Invoices/2026",
+    "tags": [
+      "home",
+      "internet",
+      "invoice"
+    ],
+    "amount": 39,
+    "lines": [
+      "Customer: Camille Martin (fictional)",
+      "Service period: 01 August - 31 August 2026",
+      "Home fibre subscription: EUR 32.50",
+      "VAT (20%): EUR 6.50",
+      "Total including VAT: EUR 39.00",
+      "Payment received on 05 August 2026."
+    ]
+  },
+  {
+    "file": "2026-09_internet_invoice.pdf",
+    "title": "Internet invoice",
+    "issuer": "Fibre & Fern",
+    "reference": "FF-2026-0901",
+    "date": "2026-09-01",
+    "kind": "Invoice",
+    "folder": "Documents/Finance/Invoices/2026",
+    "tags": [
+      "home",
+      "internet",
+      "invoice"
+    ],
+    "amount": 39,
+    "lines": [
+      "Customer: Camille Martin (fictional)",
+      "Service period: 01 September - 30 September 2026",
+      "Home fibre subscription: EUR 32.50",
+      "VAT (20%): EUR 6.50",
+      "Total including VAT: EUR 39.00",
+      "Payment received on 05 September 2026."
+    ]
+  },
+  {
+    "file": "2026_apartment_lease.pdf",
+    "title": "Apartment lease",
+    "issuer": "Willow Homes",
+    "reference": "WH-LEASE-042",
+    "date": "2026-01-15",
+    "kind": "Contract",
+    "folder": "Documents/Home/Housing",
+    "tags": [
+      "home",
+      "housing",
+      "contract"
+    ],
+    "lines": [
+      "Tenant: Camille Martin (fictional)",
+      "Property: 12 Example Lane, Demo City (fictional)",
+      "Lease start: 01 February 2026",
+      "Monthly rent: EUR 850.00; service charges: EUR 50.00",
+      "Security deposit: EUR 850.00",
+      "Clause 8 - Notice period",
+      "For this fictional agreement, the tenant gives one month's",
+      "written notice before departure. Notice begins on receipt.",
+      "This sample is not a legal template or legal advice."
+    ]
+  },
+  {
+    "file": "2026_dishwasher_warranty.pdf",
+    "title": "Dishwasher warranty",
+    "issuer": "Atelier Home",
+    "reference": "AH-DW-2026-014",
+    "date": "2026-03-12",
+    "kind": "Certificate",
+    "folder": "Documents/Home/Equipment",
+    "tags": [
+      "home",
+      "equipment",
+      "warranty"
+    ],
+    "lines": [
+      "Customer: Camille Martin (fictional)",
+      "Product: Atelier DW-400 dishwasher (fictional)",
+      "Purchase date: 12 March 2026",
+      "Purchase price: EUR 449.00",
+      "Commercial warranty: 24 months from purchase",
+      "Warranty end date: 12 March 2028",
+      "Coverage: parts and labour for manufacturing defects.",
+      "Exclusions: accidental damage and incorrect installation.",
+      "Keep this certificate and the original purchase receipt."
+    ]
+  },
+  {
+    "file": "2026_home_insurance.pdf",
+    "title": "Home insurance",
+    "issuer": "Cedar Mutual",
+    "reference": "CM-HOME-2026-008",
+    "date": "2026-02-01",
+    "kind": "Certificate",
+    "folder": "Documents/Home/Insurance",
+    "tags": [
+      "home",
+      "insurance"
+    ],
+    "lines": [
+      "Policyholder: Camille Martin (fictional)",
+      "Property: 12 Example Lane, Demo City (fictional)",
+      "Cover period: 01 February 2026 - 31 January 2027",
+      "Annual premium: EUR 216.00",
+      "Covered events: fire, water damage and theft.",
+      "Standard excess: EUR 150.00 per claim.",
+      "This fictional certificate does not provide insurance."
+    ]
+  }
+]
