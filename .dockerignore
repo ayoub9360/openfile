@@ -1,0 +1,14 @@
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+.git
+.env*
+.data
+**/test-results
+**/playwright-report
+
+output
+backups
+docs/images
+*.dump

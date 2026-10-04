@@ -1,0 +1,135 @@
+name: open-file
+
+services:
+  database:
+    image: pgvector/pgvector:pg17
+    mem_limit: 1024m
+    cpus: 2.0
+    pids_limit: 128
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-openfile}
+      POSTGRES_USER: ${POSTGRES_USER:-openfile}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run node scripts/setup.mjs first}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build:
+      context: .
+      target: server
+    command: ["node", "apps/server/dist/provision.js"]
+    restart: "no"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-openfile}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-openfile}
+      APP_DATABASE_PASSWORD: ${APP_DATABASE_PASSWORD:?Run setup --upgrade for an existing installation}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Run setup first}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Run setup first}
+    depends_on:
+      database:
+        condition: service_healthy
+    mem_limit: 512m
+    cpus: 1.0
+    security_opt: ["no-new-privileges:true"]
+  backend:
+    build:
+      context: .
+      target: server
+    restart: unless-stopped
+    init: true
+    mem_limit: 1536m
+    cpus: 2.0
+    pids_limit: 128
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    environment: &server-environment
+      DATABASE_URL: postgres://openfile_app:${APP_DATABASE_PASSWORD}@database:5432/${POSTGRES_DB:-openfile}
+      SIGNUP_TOKEN: ${SIGNUP_TOKEN:-}
+      MAX_USER_BYTES: ${MAX_USER_BYTES:-1073741824}
+      MAX_TOTAL_BYTES: ${MAX_TOTAL_BYTES:-10737418240}
+      MAX_USER_DOCUMENTS: ${MAX_USER_DOCUMENTS:-500}
+      MAX_USER_JOBS: ${MAX_USER_JOBS:-50}
+      MAX_CONVERSATIONS: ${MAX_CONVERSATIONS:-100}
+      MAX_CONVERSATION_MESSAGES: ${MAX_CONVERSATION_MESSAGES:-200}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Run setup first}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Run setup first}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      TRUSTED_ORIGINS: ${TRUSTED_ORIGINS:-http://localhost:3000}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      STORAGE_ROOT: /data/files
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    volumes:
+      - files:/data/files
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  worker:
+    build:
+      context: .
+      target: server
+    command: ["node", "apps/server/dist/worker.js"]
+    restart: unless-stopped
+    init: true
+    mem_limit: 1024m
+    cpus: 1.0
+    pids_limit: 128
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    environment: *server-environment
+    volumes:
+      - files:/data/files
+    depends_on:
+      backend:
+        condition: service_healthy
+  frontend:
+    build:
+      context: .
+      target: frontend
+    restart: unless-stopped
+    init: true
+    mem_limit: 1024m
+    cpus: 2.0
+    pids_limit: 128
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://backend:3001
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 15
+volumes:
+  postgres:
+  files:
