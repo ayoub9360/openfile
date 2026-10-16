@@ -6,7 +6,6 @@ Thank you for contributing. Start with [local installation](docs/installation.md
 ## Preparing a change
 
 1. Describe the problem or feature in a repository issue, without private data.
-   For a vulnerability, follow [SECURITY.md](SECURITY.md).
 2. Install the Node and pnpm versions declared by the project, then run
    `pnpm install --frozen-lockfile`.
 3. Create a branch and keep changes focused on the problem being addressed.
@@ -20,7 +19,7 @@ Use TypeScript, React, and shared components from `packages/ui`. Respect the
 boundaries between domain, application, and infrastructure; keep shared contracts
 in `packages/core`. Avoid adding a dependency for a simple task.
 
-Read the applicable `AGENTS.md` files. Before changing Next.js code, read the
+Before changing Next.js code, read the
 installed version's guides in `apps/web/node_modules/next/dist/docs/`.
 This version's conventions may differ from examples found elsewhere.
 
@@ -85,7 +84,7 @@ For documentation and examples:
 
 ```bash
 node scripts/generate-demo.mjs
-pnpm exec prettier --check README.md CONTRIBUTING.md SECURITY.md 'docs/*.md' 'examples/*.md' scripts/generate-demo.mjs
+pnpm exec prettier --check README.md CONTRIBUTING.md 'docs/*.md' 'examples/*.md' scripts/generate-demo.mjs
 ```
 
 Only run global formatting when that scope is intentional. Screenshots must come

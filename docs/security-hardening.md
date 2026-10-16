@@ -1,7 +1,7 @@
 # Sécurisation et migration
 
-Les correctifs répondent aux constats de [l'audit initial](../SECURITY_AUDIT.md).
-Ils doivent être reconstruits et déployés pour protéger une installation existante.
+Ce guide décrit les protections de l'application et la migration des installations
+existantes. Reconstruire et déployer les services pour appliquer ces protections.
 
 ## Installation existante
 
@@ -142,15 +142,6 @@ le build autorise uniquement cette absence de patch inutilisé pendant cette ét
 La CI exécute typecheck, lint, tests frontend/serveur, tests du correctif, audit,
 build et Gitleaks sur l'historique disponible. Aucun secret n'est requis dans la CI.
 
-Contrôles locaux effectués lors de la correction : tests serveur et frontend,
-tests du patch braces, typecheck/lint, builds Docker, installation dans une base
-neuve isolée, vérification des droits du rôle runtime, import/analyse/aperçu et
-classement d'un PDF via les images production. La CSP a été contrôlée dans les
-réponses HTTP et le navigateur. Les résultats définitifs sont consignés dans
-la réponse de livraison ; ne pas confondre une commande prévue en CI avec une
-exécution effective sur GitHub.
-
 Restent propres à l'exploitation : installation du certificat public, règles du
 pare-feu externe, protection/chiffrement des sauvegardes et des volumes, et contrôle
-des intégrations Google/OpenAI avec les identifiants réels. Les images déjà en
-service ne sont pas remplacées par les tests isolés.
+des intégrations Google/OpenAI avec les identifiants réels.

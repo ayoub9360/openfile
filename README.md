@@ -96,8 +96,6 @@ the real backend; the screenshots are not mockups.
 | [API](docs/api.md)                                     | Authentication, routes, and formats                      |
 | [Operations](docs/operations.md)                       | HTTPS, backups, updates, and troubleshooting             |
 | [Contributing](CONTRIBUTING.md)                        | Conventions and checks                                   |
-| [Security](SECURITY.md)                                | Reporting and precautions before public exposure         |
-| [Validation status](docs/validation.md)                | Checks performed for this documentation                  |
 
 ## Current scope
 
